@@ -1,7 +1,7 @@
 package praktikum.api;
 
 import io.qameta.allure.Step;
-import io.qameta.allure.restassured.AllureRestAssured;
+
 
 import static io.restassured.RestAssured.given;
 
