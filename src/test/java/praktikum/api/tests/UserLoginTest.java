@@ -1,4 +1,4 @@
-package praktikum.api;
+package praktikum.api.tests;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import praktikum.api.clients.UserClient;
 import praktikum.api.models.User;
+import praktikum.api.generators.UserGenerator;
 
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,28 +16,36 @@ public class UserLoginTest {
 
     private final UserClient userClient = new UserClient();
     private User testUser;
-    private String accessToken;
 
     @Before
     public void setUp() {
+        // Генерируем пользователя и создаём его в системе
         testUser = UserGenerator.getRandomUser();
         userClient.create(testUser).then().statusCode(SC_OK);
     }
 
     @After
     public void tearDown() {
-        userClient.delete(accessToken);
+        if (testUser != null) {
+            // Получаем токен через логин для удаления
+            String accessToken = userClient.login(testUser)
+                    .then()
+                    .extract()
+                    .path("accessToken");
+
+            userClient.delete(accessToken);
+        }
     }
 
     @Test
     @DisplayName("Успешный логин с существующим пользователем")
     @Description("Ожидаем статус-код 200 и success=true")
     public void loginWithValidUserTest() {
-        accessToken = userClient.login(testUser)
+        userClient.login(testUser)
                 .then().statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .extract()
-                .path("accessToken");
+                .path("accessToken"); // просто получаем токен, если нужен
     }
 
     @Test
@@ -63,5 +72,6 @@ public class UserLoginTest {
                 .body("message", equalTo("email or password are incorrect"));
     }
 }
+
 
 

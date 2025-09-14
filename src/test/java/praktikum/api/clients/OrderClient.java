@@ -1,29 +1,30 @@
-package praktikum.api;
+package praktikum.api.clients;
 
 import io.qameta.allure.Step;
-
+import io.restassured.response.Response;
+import praktikum.api.Endpoints;
 
 import static io.restassured.RestAssured.given;
 
-public class OrderClient {
-    private static final String BASE_URL = "https://stellarburgers.nomoreparties.site/api";
+public class OrderClient extends BaseClient {
 
-@Step("Создание заказа")
-    public io.restassured.response.Response createOrder(String accessToken, Object orderBody) {
-    return given()
-            .header("Content-type", "application/json")
-            .header("Authorization", accessToken)
-            .body(orderBody)
-            .when()
-            .post(BASE_URL + "/orders");
+    @Step("Создание заказа")
+    public Response createOrder(String accessToken, Object orderBody) {
+        return given()
+                .spec(getBaseSpec())
+                .header("Authorization", accessToken)
+                .body(orderBody)
+                .when()
+                .post(Endpoints.ORDERS);
+    }
+
+    @Step("Получение списка ингредиентов")
+    public Response getIngredients() {
+        return given()
+                .spec(getBaseSpec())
+                .when()
+                .get(Endpoints.INGREDIENTS);
+    }
 }
 
-@Step("Получение списка ингредиентов")
 
-    public io.restassured.response.Response getIngredients() {
-    return given()
-            .header("Content-type", "application/json")
-            .when()
-            .get(BASE_URL + "/ingredients");
-}
-}

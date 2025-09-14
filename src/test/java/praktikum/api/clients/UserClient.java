@@ -1,13 +1,12 @@
-package praktikum.api;
+package praktikum.api.clients;
 
 import io.qameta.allure.Step;
-
+import praktikum.api.Endpoints;
+import praktikum.api.models.User;
 
 import static io.restassured.RestAssured.given;
 
 public class UserClient {
-
-    private static final String BASE_URL = "https://stellarburgers.nomoreparties.site/api";
 
     @Step("Создание пользователя")
     public io.restassured.response.Response create(User user) {
@@ -15,7 +14,7 @@ public class UserClient {
                 .header("Content-type", "application/json")
                 .body(user)
                 .when()
-                .post(BASE_URL + "/auth/register");
+                .post(Endpoints.REGISTER);
     }
 
     @Step("Логин пользователя")
@@ -24,17 +23,22 @@ public class UserClient {
                 .header("Content-type", "application/json")
                 .body(user)
                 .when()
-                .post(BASE_URL + "/auth/login");
+                .post(Endpoints.LOGIN);
     }
 
-    @Step("Удаление пользователя")
+    @Step("Удаление пользователя (только для очистки, не проверяем результат)")
     public void delete(String accessToken) {
-        if (accessToken != null) {
-            given()
-                    .header("Authorization", accessToken)
-                    .when()
-                    .delete(BASE_URL + "/auth/user");
-        }
+        if (accessToken == null || accessToken.isEmpty()) return;
+
+        // Просто выполняем запрос, не проверяем статус
+        given()
+                .header("Authorization", accessToken)
+                .when()
+                .delete(Endpoints.DELETE_USER);
     }
 }
+
+
+
+
 

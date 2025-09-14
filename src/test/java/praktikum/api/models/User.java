@@ -1,31 +1,17 @@
-package praktikum.api;
+package praktikum.api.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
 public class User {
-
     private String email;
     private String password;
     private String name;
 
-    public User(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return  name;
-    }
-
+    // Генерация случайного пользователя
     public static User getRandomUser() {
         String unique = UUID.randomUUID().toString().substring(0, 6);
         return new User(
@@ -35,3 +21,4 @@ public class User {
         );
     }
 }
+
