@@ -14,11 +14,6 @@ public class UserSteps {
         return userClient.create(user);
     }
 
-    @Step("Логин пользователя {user.email}")
-    public Response loginUser(User user) {
-        return userClient.login(user);
-    }
-
     @Step("Удалить пользователя с токеном {accessToken}")
     public void deleteUser(String accessToken) {
         userClient.delete(accessToken);
