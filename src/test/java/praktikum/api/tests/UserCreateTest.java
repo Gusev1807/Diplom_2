@@ -54,15 +54,38 @@ public class UserCreateTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя без обязательного поля")
-    @Description("Проверка, что если не указать email, password или name — вернется 403")
-    public void createUserWithoutRequiredFieldTest() {
-        testUser = new User("", "password123", "TestUser"); // нет email
+    @DisplayName("Создание пользователя без email")
+    @Description("Проверка, что если не указать email — вернется 403")
+    public void createUserWithoutEmailTest() {
+        testUser = new User("", "password123", "TestUser");
+        client.create(testUser)
+                .then().statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    @Test
+    @DisplayName("Создание пользователя без пароля")
+    @Description("Проверка, что если не указать password — вернется 403")
+    public void createUserWithoutPasswordTest() {
+        testUser = new User("test@example.com", "", "TestUser");
+        client.create(testUser)
+                .then().statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    @Test
+    @DisplayName("Создание пользователя без имени")
+    @Description("Проверка, что если не указать name — вернется 403")
+    public void createUserWithoutNameTest() {
+        testUser = new User("test@example.com", "password123", "");
         client.create(testUser)
                 .then().statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }
 }
+
 
 

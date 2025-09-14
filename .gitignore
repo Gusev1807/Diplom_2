@@ -40,3 +40,4 @@ build/
 .allure/
 .idea/
 !allure-results/
+Output/

@@ -14,6 +14,8 @@ import praktikum.api.steps.OrderSteps;
 import java.util.Collections;
 import java.util.List;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
@@ -72,9 +74,21 @@ public class OrderTests {
     public void createOrderWithoutIngredients() {
         Response response = orderSteps.createOrder(accessToken, Collections.emptyList());
         response.then()
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .statusCode(SC_BAD_REQUEST)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Ingredient ids must be provided"));
     }
+
+    @Test
+    @DisplayName("Создание заказа с невалидным хешем ингредиента")
+    @Description("Проверка, что сервер возвращает 500 при невалидном формате ID ингредиента")
+    public void createOrderWithInvalidIngredientHash() {
+        List<String> invalidIngredient = List.of("aaaaaaaaaa");
+
+        orderSteps.createOrder(accessToken, invalidIngredient)
+                .then()
+                .statusCode(SC_INTERNAL_SERVER_ERROR);
+    }
 }
+
 
